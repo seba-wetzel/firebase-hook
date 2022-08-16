@@ -1,8 +1,16 @@
 import { useState, useEffect } from 'react';
-import { initializeApp } from "firebase/app";
-import { collection, getFirestore, getDocs, addDoc, QuerySnapshot, CollectionReference, DocumentReference, Firestore } from "firebase/firestore";
-import { Auth, getAuth, onAuthStateChanged } from "firebase/auth";
-
+import { initializeApp } from 'firebase/app';
+import {
+  collection,
+  getFirestore,
+  getDocs,
+  addDoc,
+  QuerySnapshot,
+  CollectionReference,
+  DocumentReference,
+  Firestore,
+} from 'firebase/firestore';
+import { Auth, getAuth, onAuthStateChanged } from 'firebase/auth';
 
 let DB: Firestore;
 let AUTH: Auth;
@@ -25,7 +33,9 @@ export interface User {
   emailVerified: boolean;
 }
 
-export const useInitializeFirebase = (initialConfig: FirebaseConfig): Boolean => {
+export const useInitializeFirebase = (
+  initialConfig: FirebaseConfig
+): Boolean => {
   const [initialized, setInitialized] = useState(false);
   useEffect(() => {
     if (!initialized) {
@@ -34,33 +44,35 @@ export const useInitializeFirebase = (initialConfig: FirebaseConfig): Boolean =>
       AUTH = getAuth();
       setInitialized(true);
     }
-  } , [initialized]);
+  }, [initialized]);
   return initialized;
-}
+};
 
+export const useFirestore = (collectionPath: string) => {
+  const [docs, setDocs] = useState<null | QuerySnapshot>(null);
+  useEffect(() => {
+    async function getData() {
+      const collectionReference: CollectionReference = collection(
+        DB,
+        collectionPath
+      );
+      const querySnapshot = await getDocs(collectionReference);
+      setDocs(querySnapshot);
+    }
+    if (!docs) getData();
+  }, [docs, collectionPath]);
 
-export const useFirestore =  (collectionPath:string) => {
-    const [docs, setDocs] = useState < null| QuerySnapshot>(null);
-    useEffect(() => {
-        async function getData() {
-            const collectionReference: CollectionReference = collection(DB, collectionPath);
-            const querySnapshot = await getDocs(collectionReference);
-            setDocs(querySnapshot);
-        }   
-        if(!docs) getData();
-    }, [docs, collectionPath]);
-    
+  return docs;
+};
 
-    return docs;
-}
-
-export const useOnAuthStateChanged = (callback: (user: User | null) => User | null) => {
+export const useOnAuthStateChanged = (
+  callback: (user: User | null) => User | null
+) => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(AUTH, callback);
     return () => unsubscribe();
-  } , []);
-}
-
+  }, []);
+};
 
 /* 
 @param {string} collection name
@@ -69,37 +81,25 @@ export const useOnAuthStateChanged = (callback: (user: User | null) => User | nu
 @return {object} error if any
 @description This function is used to create a new collection in firestore
 */
-export const useFirestoreAdd =  (collectionPath: string) => {
-    const [docs, setDocs] = useState < null| DocumentReference>(null);
-    const [error, setError] = useState<any>(null);
-   
-    async function setData(data: String) {
-        try {
-            const collectionReference: CollectionReference = collection(DB, collectionPath);
-            const docRef = await addDoc(collectionReference, data);
-            setDocs(docRef);
-          
-          } catch (e) {
-            setError(e);
-          }
-        }   
+export const useFirestoreAdd = (collectionPath: string) => {
+  const [docs, setDocs] = useState<null | DocumentReference>(null);
+  const [error, setError] = useState<any>(null);
 
-    return [docs, setData, error];
-}
+  async function setData(data: String) {
+    try {
+      const collectionReference: CollectionReference = collection(
+        DB,
+        collectionPath
+      );
+      const docRef = await addDoc(collectionReference, data);
+      setDocs(docRef);
+    } catch (e) {
+      setError(e);
+    }
+  }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+  return [docs, setData, error];
+};
 
 //test function
 export const sum = (a: number, b: number) => {
