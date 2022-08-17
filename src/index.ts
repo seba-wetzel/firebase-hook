@@ -109,8 +109,8 @@ export const useSignInWithPopup = () => {
       .catch(error => {
         console.log(error);
       });
-    return [user, setLogin];
   };
+  return [user, setLogin];
 };
 /* 
 @param {string} collection name
