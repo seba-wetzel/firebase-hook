@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { initializeApp } from 'firebase/app';
+
 import {
   collection,
   getFirestore,
@@ -10,12 +11,17 @@ import {
   DocumentReference,
   Firestore,
 } from 'firebase/firestore';
-import { Auth, getAuth, onAuthStateChanged } from 'firebase/auth';
+import {
+  Auth,
+  getAuth,
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+} from 'firebase/auth';
 
 let DB: Firestore;
 let AUTH: Auth;
 
-export interface FirebaseConfig {
+export interface IFirebaseConfig {
   apiKey: string;
   authDomain: string;
   databaseURL: string;
@@ -25,7 +31,7 @@ export interface FirebaseConfig {
   appId: string;
   measurementId?: string;
 }
-export interface User {
+export interface IUser {
   uid: string;
   email: string | null;
   displayName: string | null;
@@ -34,7 +40,7 @@ export interface User {
 }
 
 export const useInitializeFirebase = (
-  initialConfig: FirebaseConfig
+  initialConfig: IFirebaseConfig
 ): Boolean => {
   const [initialized, setInitialized] = useState(false);
   useEffect(() => {
@@ -66,12 +72,22 @@ export const useFirestore = (collectionPath: string) => {
 };
 
 export const useOnAuthStateChanged = (
-  callback: (user: User | null) => User | null
+  callback: (user: IUser | null) => IUser | null
 ) => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(AUTH, callback);
     return () => unsubscribe();
   }, []);
+};
+
+export const useSignInWithEmailAndPassword = () => {
+  const [user, setUser] = useState<IUser | null>(null);
+  const setLogin = (email: string, password: string) => {
+    signInWithEmailAndPassword(AUTH, email, password).then(({ user }) => {
+      setUser(user);
+    });
+  };
+  return [user, setLogin];
 };
 
 /* 
