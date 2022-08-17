@@ -76,7 +76,7 @@ export const useFirestore = (collectionPath: string) => {
 };
 
 export const useOnAuthStateChanged = (
-  callback: (user: IUser | null) => IUser | null
+  callback: (user: IUser | null) => void
 ) => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(AUTH, callback);
@@ -86,10 +86,12 @@ export const useOnAuthStateChanged = (
 
 export const useSignInWithEmailAndPassword = () => {
   const [user, setUser] = useState<IUser | null>(null);
+  useOnAuthStateChanged((user)=>setUser(user));
   const setLogin = (email: string, password: string) => {
-    signInWithEmailAndPassword(AUTH, email, password).then(({ user }) => {
-      setUser(user);
-    });
+    signInWithEmailAndPassword(AUTH, email, password)
+    // .then(({ user }) => {
+    //   setUser(user);
+    // });
   };
   return [user, setLogin];
 };
