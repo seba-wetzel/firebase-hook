@@ -16,10 +16,13 @@ import {
   getAuth,
   onAuthStateChanged,
   signInWithEmailAndPassword,
+  signInWithPopup, 
+  GoogleAuthProvider
 } from 'firebase/auth';
 
 let DB: Firestore;
 let AUTH: Auth;
+let PROVIDER: GoogleAuthProvider;
 
 export interface IFirebaseConfig {
   apiKey: string;
@@ -48,6 +51,7 @@ export const useInitializeFirebase = (
       initializeApp(initialConfig);
       DB = getFirestore();
       AUTH = getAuth();
+      PROVIDER = new GoogleAuthProvider();
       setInitialized(true);
     }
   }, [initialized]);
@@ -90,6 +94,21 @@ export const useSignInWithEmailAndPassword = () => {
   return [user, setLogin];
 };
 
+export const useSignInWithPopup = () => {
+  const [user, setUser] = useState<IUser | null>(null);
+  const setLogin = () => {
+    signInWithPopup(AUTH, PROVIDER)
+  .then((result) => {
+    // This gives you a Google Access Token. You can use it to access the Google API.
+    //const credential = GoogleAuthProvider.credentialFromResult(result);
+    //const token = credential.accessToken;
+    // The signed-in user info.
+    const user = result.user;
+    setUser(user);
+  })
+  return [user, setLogin];
+  }
+}
 /* 
 @param {string} collection name
 @return {object} doc snapshot created in firestore
