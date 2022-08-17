@@ -103,8 +103,8 @@ export const useSignInWithPopup = () => {
     //const credential = GoogleAuthProvider.credentialFromResult(result);
     //const token = credential.accessToken;
     // The signed-in user info.
-    const user = result.user;
-    setUser(user);
+    //const user = result.user;
+    setUser(result.user);
   })
   return [user, setLogin];
   }
