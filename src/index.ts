@@ -81,14 +81,14 @@ export const useOnAuthStateChanged = (
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(AUTH, callback);
     return () => unsubscribe();
-  }, []);
+  }, [AUTH]);
 };
 
 export const useSignInWithEmailAndPassword = () => {
   const [user, setUser] = useState<IUser | null>(null);
-  useOnAuthStateChanged((user)=>setUser(user));
+  useOnAuthStateChanged(user => setUser(user));
   const setLogin = (email: string, password: string) => {
-    signInWithEmailAndPassword(AUTH, email, password)
+    signInWithEmailAndPassword(AUTH, email, password);
     // .then(({ user }) => {
     //   setUser(user);
     // });
@@ -98,19 +98,20 @@ export const useSignInWithEmailAndPassword = () => {
 
 export const useSignInWithPopup = () => {
   const [user, setUser] = useState<IUser | null>(null);
+  useOnAuthStateChanged(user => setUser(user));
   const setLogin = () => {
-    signInWithPopup(AUTH, PROVIDER)
-      .then(result => {
-        // This gives you a Google Access Token. You can use it to access the Google API.
-        //const credential = GoogleAuthProvider.credentialFromResult(result);
-        //const token = credential.accessToken;
-        // The signed-in user info.
-        //const user = result.user;
-        setUser(result.user);
-      })
-      .catch(error => {
-        console.log(error);
-      });
+    signInWithPopup(AUTH, PROVIDER);
+    // .then(result => {
+    //   // This gives you a Google Access Token. You can use it to access the Google API.
+    //   //const credential = GoogleAuthProvider.credentialFromResult(result);
+    //   //const token = credential.accessToken;
+    //   // The signed-in user info.
+    //   //const user = result.user;
+    //   setUser(result.user);
+    // })
+    // .catch(error => {
+    //   console.log(error);
+    // });
   };
   return [user, setLogin];
 };

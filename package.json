@@ -1,5 +1,6 @@
-{"version":"0.2.9",
+{"version":"0.2.12",
 "author": "seba-wetzel",
+"repository": "https://github.com/seba-wetzel/firebase-hook",
 "license": "MIT",
 "main":"dist/index.js",
 "typings":"dist/index.d.ts",
