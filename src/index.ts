@@ -85,13 +85,16 @@ export const useOnAuthStateChanged = (
 };
 export const useGetUser = () => {
   const [user, setUser] = useState<IUser | null>(null);
+  const logOut = () => {
+    AUTH && AUTH.signOut();
+  }
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(AUTH, user => {
       setUser(user);
     });
     return () => unsubscribe();
   }, [AUTH]);
-  return { user };
+  return { user, logOut };
 };
 
 export const useSignInWithEmailAndPassword = () => {
@@ -105,8 +108,11 @@ export const useSignInWithEmailAndPassword = () => {
       setError(error)
     );
   };
+  const logOut = () => {
+    AUTH && AUTH.signOut();
+  }
 
-  return { user, setLogin, error };
+  return { user, setLogin, logOut, error };
 };
 
 export const useSignInWithPopup = () => {
@@ -116,7 +122,10 @@ export const useSignInWithPopup = () => {
   const setLogin = () => {
     signInWithPopup(AUTH, PROVIDER).catch(error => setError(error));
   };
-  return { user, setLogin, error };
+  const logOut = () => {
+    AUTH && AUTH.signOut();
+  }
+  return { user, setLogin, logOut, error };
 };
 /* 
 @param {string} collection name
