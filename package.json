@@ -1,4 +1,4 @@
-{"version":"0.2.12",
+{"version":"0.2.13",
 "author": "seba-wetzel",
 "repository": "https://github.com/seba-wetzel/firebase-hook",
 "license": "MIT",
@@ -8,9 +8,10 @@
 "engines":{"node":">=10"},
 "scripts":{
     "start":"tsdx watch",
-    "build":"tsdx build",
+    "build":"tsdx lint --fix && tsdx build",
     "test":"tsdx test",
     "lint":"tsdx lint",
+    "lint-fix":"tsdx lint --fix",
     "prepare":"tsdx build",
     "size":"size-limit",
     "analyze":"size-limit --why"
